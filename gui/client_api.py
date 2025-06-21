@@ -3,7 +3,7 @@ import json
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 
-AES_KEY = b'Sixteen byte key'  # בדיוק כמו בשרת!
+AES_KEY = b'BEST_APP_AVIV_DA'
 SERVER_IP = '127.0.0.1'
 SERVER_PORT = 12345
 

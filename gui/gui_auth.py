@@ -4,6 +4,8 @@ import re
 from database import add_user, add_log
 from coupon_manager import CouponManager
 from user import User
+import sqlite3
+
 
 class AuthFrame:
     def __init__(self, parent, main_window):
@@ -154,7 +156,6 @@ class AuthFrame:
             messagebox.showerror("שגיאה", "חובה למלא שם משתמש וסיסמה")
             return
             
-        import sqlite3
         conn = sqlite3.connect("voucher_vault.db")
         cursor = conn.cursor()
         cursor.execute('SELECT id, password FROM users WHERE username=?', (username,))

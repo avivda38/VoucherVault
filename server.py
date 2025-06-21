@@ -5,11 +5,9 @@ import hashlib
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 from database import add_log
-
-
 import database
 
-AES_KEY = b'Sixteen byte key'  # 16/24/32 bytes, keep same key in client too!
+AES_KEY = b'BEST_APP_AVIV_DA'
 
 def encrypt_msg(msg):
     cipher = AES.new(AES_KEY, AES.MODE_CBC)
