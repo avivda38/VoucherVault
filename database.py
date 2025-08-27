@@ -5,6 +5,7 @@ import csv
 import os
 from coupon import Coupon
 
+
 DB_PATH = "voucher_vault.db"
 
 # Define the explicit column order for coupon selection to match Coupon constructor
