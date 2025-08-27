@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox, filedialog, ttk
+from tkinter import messagebox, filedialog, ttk, simpledialog
 from datetime import date
 import os
 from database import add_log
@@ -134,10 +134,11 @@ class CouponsFrame:
         tk.Label(form_frame, text="תנאים:").pack(pady=5)
         terms = tk.Entry(form_frame)  # Changed to Entry
         terms.pack()
-        
+
         # Favorite
         is_favorite = tk.BooleanVar()
         tk.Checkbutton(form_frame, text="★ הוספה למועדפים", variable=is_favorite).pack(pady=5)
+
         
         # CVV
         tk.Label(form_frame, text="CVV:").pack(pady=5)
@@ -296,8 +297,7 @@ class CouponsFrame:
                     widget.bind('<Leave>', lambda e: hide_tooltip())
                 widget.bind('<Enter>', show_tooltip)
             
-            create_tooltip(btn_star, "הוספה למועדפים")
-            
+
             vals = [
                 coupon.business_name, coupon.purchase_source, coupon.code, 
                 coupon.coupon_type, coupon.description, coupon.terms, coupon.cvv,
@@ -487,12 +487,34 @@ class CouponsFrame:
     def redeem_coupon(self, coupon):
         if not self.check_manager():
             return
-            
-        if messagebox.askyesno("מימוש שובר", "האם אתה בטוח שברצונך לממש את השובר?"):
-            user_id = self.main_window.current_user[0]
-            details = f"קוד: {coupon.code}, בית עסק: {coupon.business_name}, יתרה: {coupon.balance:.2f} ₪"
-            self.main_window.manager.redeem_coupon(coupon.id)
-            self.show_coupons()
+
+        if not messagebox.askyesno("מימוש שובר", "האם אתה בטוח שברצונך לממש את השובר?"):
+            return
+
+        if messagebox.askyesno("מימוש סכום", "האם ברצונך לממש את כל הסכום?"):
+            new_balance = 0
+        else:
+            amount_str = tk.simpledialog.askstring("סכום למימוש", "אנא הזן את הסכום שברצונך לממש:")
+            if not amount_str:
+                return
+            try:
+                amount = float(amount_str)
+            except ValueError:
+                messagebox.showerror("שגיאה", "הסכום שהוזן אינו תקין.")
+                return
+
+            if amount <= 0:
+                messagebox.showerror("שגיאה", "הסכום חייב להיות גדול מאפס.")
+                return
+
+            if amount > coupon.balance:
+                messagebox.showerror("שגיאה", "הסכום שהוזן גבוה מהיתרה של השובר.")
+                return
+
+            new_balance = round(coupon.balance - amount, 2)
+
+        self.main_window.manager.update_coupon_fields(coupon.id, {"balance": new_balance})
+        self.show_coupons()
 
     def show_search(self):
         if not self.check_manager():

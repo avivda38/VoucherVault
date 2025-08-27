@@ -171,3 +171,7 @@ class CouponManager:
         details = f" בית עסק: {coupon.business_name}, יתרה: {coupon.balance:.2f} ₪"
         self.log("שכפול שובר", details)
         return coupon_id
+
+    def update_coupon_fields(self, coupon_id, fields: dict):
+        return db_update_coupon(coupon_id, fields)
+
